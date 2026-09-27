@@ -1052,7 +1052,7 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
     <button class="smallbtn" id="saveInfo">💾 Сохранение: авто</button>
     <button class="smallbtn" id="chatBtn">🍺 Пивляндия <span id="chatDraftMark" class="chat-draft-mark" hidden>!</span><span id="chatUnread" class="chat-badge zero">0</span></button>
   </div>
-  <div class="log" id="log">Версия 6.0 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
+  <div class="log" id="log">Версия 6.1 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
 </div>
 
 
@@ -1247,7 +1247,7 @@ const initialState = () => ({
  scene:"start", totalCorrect:0,totalAsked:0,irataCorrect:0,irataAsked:0,
  beer:0,stress:18,money:200,evgen:70,serbian:0,turkish:0,remote:0,scout:0,
  passedIrata:false, blockCorrect:0, qIndex:0, quizKey:null, history:[], finished:false,
- scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false
+ scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false, lyokhaIrataLossTriggered:false, lyokhaIrataLost:0, borrowCount:0, borrowedTotal:0, lastLyokhaCosts:[]
 });
 let S = loadState() || initialState();
 if(!S.hubVisited) S.hubVisited={turkey:{},belgrade:{},garden:{}};
@@ -1295,6 +1295,11 @@ if(!S.lastQuizQuestions) S.lastQuizQuestions={};
 if(S.lastIdleSima==null) S.lastIdleSima="";
 if(S.evgenPerfect==null) S.evgenPerfect=false;
 if(S.evgenBonusPlayed==null) S.evgenBonusPlayed=false;
+if(S.lyokhaIrataLossTriggered==null) S.lyokhaIrataLossTriggered=false;
+if(S.lyokhaIrataLost==null) S.lyokhaIrataLost=0;
+if(S.borrowCount==null) S.borrowCount=0;
+if(S.borrowedTotal==null) S.borrowedTotal=0;
+if(!Array.isArray(S.lastLyokhaCosts)) S.lastLyokhaCosts=[];
 
 const Q = {
  turkishBeach:[
@@ -1414,7 +1419,7 @@ function sceneData(key){
   irataStartBeer:{ch:"lyokha",chapter:"ТУРЦИЯ · НОЧЬ",badge:"+1 ПИВО",title:"Первая бутылка закончилась",text:"Лёха даже не рассматривает вариант остановиться. Он уже открывает вторую и объясняет, что «одна — это не тусовка, а дегустация».",call:"Каждая тусовка с Лёхой — риск. Он всегда будет заманивать Симу продолжить.",enter:()=>lyokhaDrink(1,5),choices:[["🛑 Отказаться от второй и уйти спать","irataStart","good"],["🍺 Ещё по одной","lyokhaTurkey2","danger"]]},
   lyokhaTurkey2:{ch:"lyokha",chapter:"ТУРЦИЯ · НОЧЬ",badge:"+2 ПИВА",title:"Вторая тоже почему-то не последняя",text:"После второй Лёха сообщает, что теперь уже глупо расходиться: «Мы же только вошли в ритм». Где-то далеко Аюб выключает свет в юрте.",enter:()=>lyokhaDrink(1,7),choices:[["🛑 Всё. Точно спать","irataStart","good"],["🍺 Ну и ещё по одной","lyokhaTurkey3","danger"]]},
   lyokhaTurkey3:{ch:"lyokha",chapter:"ТУРЦИЯ · ПОЗДНЯЯ НОЧЬ",badge:"+3 ПИВА",title:"Третья открывает портал в плохие решения",text:"Лёха уже поёт футбольную кричалку с местным таксистом и предлагает «чисто на час» куда-то ехать. Сима вспоминает, что утром IRATA.",enter:()=>lyokhaDrink(1,10),choices:[["🏃 Сбежать в юрту прямо сейчас","irataStart","good"],["😵 Довериться Лёхе ещё раз","lyokhaTurkeyWake","danger"]]},
-  lyokhaTurkeyWake:{ch:"hero",chapter:"ТУРЦИЯ · УТРО",badge:"ГДЕ Я?",title:"Сима просыпается на чужом пляжном лежаке",text:"Рядом нет Лёхи, зато есть пластиковый браслет непонятного бара и сообщение: «БРАТ Я УЖЕ ПОЕХАЛ ПО ДЕЛАМ». До IRATA осталось мало времени.",enter:()=>stress(18),choices:[["🏃 Срочно ехать на обучение","irataStart","danger"]]},
+  lyokhaTurkeyWake:{ch:"hero",chapter:"ТУРЦИЯ · УТРО",badge:"ГДЕ Я?",title:"Сима просыпается на чужом пляжном лежаке",text:"Рядом нет Лёхи, зато есть пластиковый браслет непонятного бара и сообщение: «БРАТ Я УЖЕ ПОЕХАЛ ПО ДЕЛАМ». До IRATA осталось мало времени.",dynamic:"lyokhaCosts",enter:()=>{stress(18);S.lastLyokhaCosts=[randomLyokhaCost("ночная поездка"),randomLyokhaCost("утренние последствия")]},choices:[["🏃 Срочно ехать на обучение","irataStart","danger"]]},
   irataStart:{ch:"hero",chapter:"IRATA TRAINING",badge:"32 QUESTIONS",title:"Вот ради чего Сима приехал",text:"IRATA-подготовка теперь отдельно: четыре более сложных блока по 8 вопросов, и только они полностью на английском.",call:"Если готовиться не надо, можно пропустить всю учебную часть и продолжить сюжет.",choices:[["📋 Start IRATA questions","quizPlanning","primary"],["⏭ Пропустить IRATA-вопросы и продолжить сюжет","irataSkipAll","skip"]]},
   irataSkipAll:{ch:"hero",chapter:"IRATA TRAINING",badge:"STORY MODE",title:"IRATA-викторина пропущена",text:"Сюжет продолжится без проверки знаний. Это режим для тех, кому сейчас не нужна подготовка.",enter:()=>{S.irataSkipped=true;S.passedIrata=true},choices:[["Продолжить сюжет","pass","primary"]]},
   quizPlanning:{ch:"hero",chapter:"IRATA · БЛОК 1",badge:"8 QUESTIONS",title:"Planning & risk assessment",text:"Eight harder questions in English. Answers are shuffled.",quiz:"planning",next:"quizEquipment"},
@@ -1423,7 +1428,7 @@ function sceneData(key){
   midBeer:{ch:"lyokha",chapter:"IRATA · ПЕРЕРЫВ",badge:"+1 ПИВО",title:"Пять минут оказались пивом",text:"Лёха утверждает, что это «для электролитов». Бутылка заканчивается, и он мгновенно предлагает вторую.",enter:()=>lyokhaDrink(1,4),choices:[["🧗 Нет, обратно на обучение","quizMethods","good"],["🍺 Ещё по одной","midBeer2","danger"]]},
   midBeer2:{ch:"lyokha",chapter:"IRATA · ПЕРЕРЫВ",badge:"+2 ПИВА",title:"Лёха считает, что перерыв ещё не закончился",text:"Он объясняет, что вторая бутылка нужна «для симметрии». Сима уже видит, как инструктор смотрит на часы.",enter:()=>lyokhaDrink(1,8),choices:[["🏃 Вернуться сейчас","quizMethods","good"],["🍺 Ещё одну — и точно назад","midBeer3","danger"]]},
   midBeer3:{ch:"lyokha",chapter:"IRATA · ПЕРЕРЫВ",badge:"+3 ПИВА",title:"Никакого «точно назад» не существует",text:"Лёха уже предлагает сменить локацию. Это последний момент, когда Сима ещё может вернуться до того, как ситуация станет отдельной сюжетной веткой.",enter:()=>lyokhaDrink(1,11),choices:[["🏃 Бежать обратно","quizMethods","good"],["😵 Продолжить","midBeerWake","danger"]]},
-  midBeerWake:{ch:"hero",chapter:"IRATA · ЧЕРЕЗ НЕКОТОРОЕ ВРЕМЯ",badge:"ОПАСНЫЙ ПЕРЕРЫВ",title:"Сима возвращается слишком поздно",text:"Никто не понимает, почему пятиминутный перерыв занял столько времени. Лёхи уже нет. Он прислал только голосовое с футбольной кричалкой.",enter:()=>stress(15),choices:[["🧗 Всё-таки закончить обучение","quizMethods","danger"]]},
+  midBeerWake:{ch:"hero",chapter:"IRATA · ЧЕРЕЗ НЕКОТОРОЕ ВРЕМЯ",badge:"ОПАСНЫЙ ПЕРЕРЫВ",title:"Сима возвращается слишком поздно",text:"Никто не понимает, почему пятиминутный перерыв занял столько времени. Лёхи уже нет. Он прислал только голосовое с футбольной кричалкой.",dynamic:"lyokhaCosts",enter:()=>{stress(15);S.lastLyokhaCosts=[randomLyokhaCost("смена локации с Лёхой")]},choices:[["🧗 Всё-таки закончить обучение","quizMethods","danger"]]},
   quizMethods:{ch:"hero",chapter:"IRATA · БЛОК 3",badge:"8 QUESTIONS",title:"Work methods, anchors & knots",text:"Double protection, anchors, attachment and knot details.",quiz:"methods",next:"quizTeam"},
   quizTeam:{ch:"hero",chapter:"IRATA · БЛОК 4",badge:"8 QUESTIONS",title:"Teams, rescue & worksite",text:"Team size, rescue, tools, communication and supervision.",quiz:"team",next:"assessment"},
   assessment:{ch:"hero",chapter:"IRATA",badge:"РЕЗУЛЬТАТ",title:"Оценка результата",text:"",dynamic:"assessment"},
@@ -1447,7 +1452,7 @@ function sceneData(key){
   lyokhaSpree:{ch:"lyokha",chapter:"БЕЛГРАД · НОЧЬ",badge:"ЕЩЁ ПО ОДНОЙ",title:"Лёха входит в раж",text:"Он повторяет «ещё по одной» с такой уверенностью, будто это официальный план вечера. Потом снова вспоминает про поездку к темнокожим блудницам. Сима, как всегда, верит, что всё под контролем.",call:"Если продолжать в том же духе, можно проснуться вообще не там, где ты пил.",choices:[["🍺 Ну ладно, ещё по одной","lyokhaLoop","danger"],["🚕 Согласиться на сомнительную поездку","lyokhaTrip","danger"],["🛑 Всё, хватит","serbQuiz2","good"]]},lyokhaLoop:{ch:"lyokha",chapter:"БЕЛГРАД · ПОЗЖЕ",badge:"+1 ПИВО",title:"Потом ещё по одной",text:"Лёха торжественно объявляет, что теперь-то вечер точно должен раскрыться. Сима ещё помнит адрес Евгена.",enter:()=>lyokhaDrink(1,8),choices:[["🛑 Хватит, домой","serbQuiz2","good"],["🍺 Ещё по одной","lyokhaLoop2","danger"]]},lyokhaLoop2:{ch:"lyokha",chapter:"БЕЛГРАД · ЕЩЁ ПОЗЖЕ",badge:"+ЕЩЁ ПИВО",title:"Лёха нашёл новый аргумент",text:"«Ну мы же уже начали». Он предлагает ещё по одной и снова возвращается к идее сомнительной поездки к темнокожим секс-работницам. Сима всё ещё думает, что контролирует вечер.",enter:()=>lyokhaDrink(1,9),choices:[["🛑 На этом всё","serbQuiz2","good"],["🍺 Ладно, ещё","lyokhaLoop3","danger"],["🚕 Поехать по сомнительному плану","lyokhaTrip","danger"]]},
   lyokhaLoop3:{ch:"lyokha",chapter:"БЕЛГРАД · НОЧЬ",badge:"ХРОНОЛОГИЯ ПЛЫВЁТ",title:"Следующая бутылка уже не имеет номера",text:"Лёха знакомится с новой компанией, начинает кричалку и обещает, что «после этой точно меняем локацию».",enter:()=>lyokhaDrink(1,11),choices:[["🛑 Попытаться закончить вечер","serbQuiz2","good"],["🍺 Ещё одна","lyokhaLoop4","danger"]]},
   lyokhaLoop4:{ch:"lyokha",chapter:"БЕЛГРАД · ОЧЕНЬ ПОЗДНО",badge:"РИСК МАКСИМАЛЬНЫЙ",title:"Сима перестал понимать, где находится",text:"Лёха по-прежнему бодр, по-прежнему предлагает ещё по одной и уже спорит с кем-то о футболе. У Симы остаются отдельные кадры вместо воспоминаний.",enter:()=>lyokhaDrink(1,13),choices:[["😵 Дальше память обрывается","lyokhaWakeup","danger"]]},
-  lyokhaTrip:{ch:"lyokha",chapter:"БЕЛГРАД · НОЧНОЙ МАРШРУТ",badge:"СОМНИТЕЛЬНАЯ ИДЕЯ",title:"План становится хуже",text:"Сима садится в такси, потому что Лёха звучит невероятно уверенно. Дальше всё смешивается: футбол, споры, ещё по одной и ощущение, что правильных решений здесь уже не осталось.",enter:()=>lyokhaDrink(1,10),choices:[["😵 Кажется, сейчас будет плохо","lyokhaWakeup","danger"]]},lyokhaWakeup:{ch:"hero",chapter:"НЕОЖИДАННОЕ УТРО",badge:"ГДЕ Я?",title:"Сима просыпается не там, где пил",text:"После многих итераций с «ещё по одной» он открывает глаза в совершенно незнакомой квартире. На стуле висит шарф Лёхи, на столе стоит тёплая вода, а в телефоне 14 пропущенных от Евгена.",call:"Это не game over. Это просто ещё одно нормальное утро в жизни Симы.",choices:[["📍 Собраться и вернуться к сюжету","serbQuiz2","primary"]]},serbQuiz2:{ch:"dragan",chapter:"БЕЛГРАД · КАФАНА",badge:"5 ВОПРОСОВ",title:"Сербский для реальной жизни",text:"Заказать, отказаться, попросить счёт и не потеряться.",quiz:"serbia2",next:"lyokhaLetterCut"},
+  lyokhaTrip:{ch:"lyokha",chapter:"БЕЛГРАД · НОЧНОЙ МАРШРУТ",badge:"СОМНИТЕЛЬНАЯ ИДЕЯ",title:"План становится хуже",text:"Сима садится в такси, потому что Лёха звучит невероятно уверенно. Дальше всё смешивается: футбол, споры, ещё по одной и ощущение, что правильных решений здесь уже не осталось.",dynamic:"lyokhaCosts",enter:()=>{lyokhaDrink(1,10);S.lastLyokhaCosts=[randomLyokhaCost("такси и ночной маршрут")]},choices:[["😵 Кажется, сейчас будет плохо","lyokhaWakeup","danger"]]},lyokhaWakeup:{ch:"hero",chapter:"НЕОЖИДАННОЕ УТРО",badge:"ГДЕ Я?",title:"Сима просыпается не там, где пил",text:"После многих итераций с «ещё по одной» он открывает глаза в совершенно незнакомой квартире. На стуле висит шарф Лёхи, на столе стоит тёплая вода, а в телефоне 14 пропущенных от Евгена.",call:"Это не game over. Это просто ещё одно нормальное утро в жизни Симы.",dynamic:"lyokhaCosts",enter:()=>{S.lastLyokhaCosts=[randomLyokhaCost("утро неизвестно где")]},choices:[["📍 Собраться и вернуться к сюжету","serbQuiz2","primary"]]},serbQuiz2:{ch:"dragan",chapter:"БЕЛГРАД · КАФАНА",badge:"5 ВОПРОСОВ",title:"Сербский для реальной жизни",text:"Заказать, отказаться, попросить счёт и не потеряться.",quiz:"serbia2",next:"lyokhaLetterCut"},
   lyokhaLetterCut:{ch:"lyokha",chapter:"КАТ-СЦЕНА",badge:"ПОДОЗРИТЕЛЬНО #4",title:"Из кармана Лёхи выпадает записка",text:"Лёха тянется за мелочью, и на пол падает сложенный листок. Сима успевает увидеть: «Лёха, если Сима опять решит сорваться — просто держи его в Белграде до выходных. Не объясняй зачем. М. и Д.» Лёха хватает бумажку и говорит, что это «про футбол».",call:"Сима верит ему. Евген — нет.",enter:()=>S.scoutClues++,choices:[["🤝 Ну про футбол так про футбол","karavanovCall","primary"]]},
   karavanovCall:{ch:"karavanov",chapter:"БЕЛГРАД · 06:12",badge:"НОВАЯ РАБОТА",title:"Звонит Караванов",text:"Высокий бритый мужчина говорит, что ему нужен человек «на работу». Евген впервые за долгое время выглядит довольным.",call:"Караванов: «Перчатки, вода, 20 минут. Дисциплина — это свобода». Евген: «Вот. Нормальный человек».",choices:[["🚗 Поехать к Караванову","gardenReveal","primary"],["💻 Остаться на удалёнке","scoutInvite",""]]},
   gardenReveal:{ch:"karavanov",chapter:"СЕРБИЯ · ОКРАИНА",badge:"ОГОРОД",title:"Работа — это буквально огород",text:"Теплица, помидоры, лопаты и триатлонный велосипед Караванова. Он говорит, что сельское хозяйство и Ironman подчиняются одному закону: если неправильно распределил силы, проиграл.",choices:[["🍅 Принять смену","karavanovQuiz","primary"],["📞 Позвонить Евгену","gardenCallEvgen",""]]},
@@ -1598,6 +1603,46 @@ function idleReplyFor(who,msg){
  const variants=[...(IDLE_CHAT_REPLIES[who]||[]),...extra];
  const picked=variants[Math.floor(Math.random()*variants.length)];
  return Array.isArray(picked)?picked:[picked];
+}
+
+function borrowMoneyInChat(){
+ if((S.money||0)>0)return;
+
+ const asks=[
+   "бля у меня ноль денег",
+   "короче кто может стрельнуть денег",
+   "ну че у кого есть немного денег до лучших времен",
+   "ыыыыыы у меня буквально $0"
+ ];
+ pushChat("Сима",asks[Math.floor(Math.random()*asks.length)],"sima",false);
+
+ const lenders=[
+   {
+     name:"Антонс",kind:"antons",
+     line:a=>`скину $${a} но это надо считать bridge financing`
+   },
+   {
+     name:"Иван",kind:"ivan",
+     line:a=>`держи $${a}. лучше бы ты мне просто сгонял за пивом`
+   },
+   {
+     name:"Тимоша",kind:"timosha",
+     line:a=>`бля ладно скину $${a} только ты опять куда-нибудь не уедь`
+   }
+ ];
+ const lender=lenders[Math.floor(Math.random()*lenders.length)];
+ const amount=20+Math.floor(Math.random()*31); // $20..$50
+ earnMoney(amount);
+ S.borrowCount=(S.borrowCount||0)+1;
+ S.borrowedTotal=(S.borrowedTotal||0)+amount;
+ save();
+ updateStats();
+ renderChat();
+
+ setTimeout(()=>{
+   pushChat(lender.name,lender.line(amount),lender.kind,true);
+   if(document.getElementById("chatOverlay").classList.contains("open"))renderChat();
+ },420+Math.floor(Math.random()*350));
 }
 
 function postRandomSimaMessage(){
@@ -1982,6 +2027,7 @@ function renderChat(){
 
  if(news)addChatAction("✍️ Отправить эту новость в Пивляндию",postCurrentNews,"primary");
  else addChatAction("✍️ Написать что-нибудь",postRandomSimaMessage,"primary");
+ if((S.money||0)<=0)addChatAction("💸 Стрельнуть денег в Пивляндии",borrowMoneyInChat,"danger");
 
  const hasAntons=S.chatMessages.some(m=>m.author==="Антонс");
  const hasIvan=S.chatMessages.some(m=>m.author==="Иван");
@@ -3259,7 +3305,43 @@ function stress(n){S.stress=clamp(S.stress+n);}
 function spendMoney(n){S.money=Math.max(0,(S.money||0)-n);}
 function earnMoney(n){S.money=(S.money||0)+n;}
 function drink(n=1,stressDelta=6){S.beer+=n;spendMoney(4*n);stress(stressDelta);}
-function lyokhaDrink(n=1,stressDelta=6){S.lyokhaLoops=(S.lyokhaLoops||0)+n;drink(n,stressDelta);}
+
+function randomLyokhaCost(label){
+ const rolled=5+Math.floor(Math.random()*66); // $5..$70
+ const before=S.money||0;
+ spendMoney(rolled);
+ const lost=before-(S.money||0);
+ return {label,rolled,lost};
+}
+
+function maybeLyokhaIrataLoss(){
+ const beersWithLyokha=S.lyokhaLoops||0;
+ if(S.lyokhaIrataLossTriggered || beersWithLyokha<7 || (S.irataCorrect||0)<=0 || S.irataSkipped)return;
+
+ // 7 beers = 10%, then +8pp per beer, capped at 50%.
+ const chance=Math.min(.50,.10+(beersWithLyokha-7)*.08);
+ if(Math.random()>=chance)return;
+
+ const before=S.irataCorrect||0;
+ const lost=Math.ceil(before/2);
+ S.irataCorrect=Math.max(0,before-lost);
+ S.totalCorrect=Math.max(0,(S.totalCorrect||0)-lost);
+ S.lyokhaIrataLossTriggered=true;
+ S.lyokhaIrataLost=lost;
+
+ pushChat(
+   "Система",
+   `После ${beersWithLyokha} пива с Лёхой Сима внезапно перестал помнить половину того, что знал по IRATA. −${lost} IRATA-баллов.`,
+   "system",
+   true
+ );
+}
+
+function lyokhaDrink(n=1,stressDelta=6){
+ S.lyokhaLoops=(S.lyokhaLoops||0)+n;
+ drink(n,stressDelta);
+ maybeLyokhaIrataLoss();
+}
 function save(){localStorage.setItem("irata-adventure-save-v42",JSON.stringify(S));}
 function loadState(){try{return JSON.parse(localStorage.getItem("irata-adventure-save-v42")||"null")}catch(e){return null}}
 function updateStats(){
@@ -3284,6 +3366,17 @@ function enterScene(key, fromChoice=true){
  if(sc.enter){
    const stamp="entered:"+key+":"+S.history.length;
    if(S.lastEnter!==stamp){sc.enter();S.lastEnter=stamp;}
+ }
+ if(sc.dynamic==="lyokhaCosts"){
+   const costs=Array.isArray(S.lastLyokhaCosts)?S.lastLyokhaCosts:[];
+   const parts=costs.map(c=>{
+     if(c.lost>=c.rolled) return `${c.label}: −$${c.lost}`;
+     if(c.lost>0) return `${c.label}: счёт $${c.rolled}, но в кошельке было только $${c.lost}`;
+     return `${c.label}: счёт $${c.rolled}, но денег уже не было`;
+   });
+   const total=costs.reduce((s,c)=>s+(c.lost||0),0);
+   const moneyLine=parts.length?`Деньги: ${parts.join(" · ")}. Итого −$${total}.`:"";
+   sc.call=(sc.call?sc.call+"<br><br>":"")+moneyLine;
  }
  if(sc.dynamic==="assessment"){
    const effectiveIrata=Math.max(0,S.irataCorrect-(S.antonPrepPenalty||0));
