@@ -1003,6 +1003,19 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
   50%{transform:scale(1.16) rotate(5deg)}
 }
 
+
+.beer-risk{display:block;margin-top:4px;font-size:9px;line-height:1.15;color:var(--muted);font-weight:800}
+.beer-risk.danger{color:#b4382f}
+.beer-risk.triggered{color:#8c1d18;font-weight:1000}
+.game-chat-dock{display:flex;justify-content:flex-end;gap:8px;align-items:center;margin:0 4px 8px}
+#chatBtn{background:#ffe36e!important;border:3px solid var(--ink)!important;box-shadow:4px 4px 0 var(--ink);font-size:16px!important;min-height:50px}
+.zero-money-borrow{background:#ffd8d2!important;border:3px solid var(--ink)!important;box-shadow:4px 4px 0 var(--ink);font-size:14px!important;min-height:50px}
+.zero-money-borrow[hidden]{display:none!important}
+@media(max-width:650px){
+  .game-chat-dock{margin:0 2px 7px;gap:6px;flex-wrap:wrap}
+  #chatBtn,.zero-money-borrow{min-height:46px;font-size:13px!important}
+}
+
 </style>
 </head>
 <body>
@@ -1015,7 +1028,7 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
     <div class="stats">
       <div class="stat"><small>🎓 ОБЩИЙ СЧЁТ</small><b id="totalScore">0 / 0</b></div>
       <div class="stat"><small>🧗 IRATA</small><b id="irataScore">0 / 32</b></div>
-      <div class="stat"><small>🍺 ВЫПИТО ПИВА</small><b id="beer">0</b></div>
+      <div class="stat"><small>🍺 ВЫПИТО ПИВА</small><b id="beer">0</b><span id="beerRisk" class="beer-risk">с Лёхой: 0 · риск с 7</span></div>
       <div class="stat money-stat"><small>💵 ДЕНЬГИ</small><b id="money">$200</b><div class="money-track"><div id="moneyFill" class="money-fill"></div></div></div>
       <div class="stat"><small>🧠 СТРЕСС</small><b id="stress">18%</b></div>
     </div>
@@ -1024,7 +1037,8 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
 
   <main class="game">
     <div class="game-chat-dock">
-      </div>
+        <button class="smallbtn zero-money-borrow" id="zeroMoneyBorrowBtn" hidden>💸 $0 — стрельнуть</button>
+    </div>
     <div class="scene">
       <aside class="portrait-col">
         <div class="portrait-frame"><img id="portrait" alt=""></div>
@@ -1052,7 +1066,7 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
     <button class="smallbtn" id="saveInfo">💾 Сохранение: авто</button>
     <button class="smallbtn" id="chatBtn">🍺 Пивляндия <span id="chatDraftMark" class="chat-draft-mark" hidden>!</span><span id="chatUnread" class="chat-badge zero">0</span></button>
   </div>
-  <div class="log" id="log">Версия 6.1 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
+  <div class="log" id="log">Версия 6.2 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
 </div>
 
 
@@ -1247,7 +1261,7 @@ const initialState = () => ({
  scene:"start", totalCorrect:0,totalAsked:0,irataCorrect:0,irataAsked:0,
  beer:0,stress:18,money:200,evgen:70,serbian:0,turkish:0,remote:0,scout:0,
  passedIrata:false, blockCorrect:0, qIndex:0, quizKey:null, history:[], finished:false,
- scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false, lyokhaIrataLossTriggered:false, lyokhaIrataLost:0, borrowCount:0, borrowedTotal:0, lastLyokhaCosts:[]
+ scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false, lyokhaIrataLossTriggered:false, lyokhaIrataLossPending:false, lyokhaIrataLost:0, borrowCount:0, borrowedTotal:0, lastLyokhaCosts:[]
 });
 let S = loadState() || initialState();
 if(!S.hubVisited) S.hubVisited={turkey:{},belgrade:{},garden:{}};
@@ -1296,6 +1310,7 @@ if(S.lastIdleSima==null) S.lastIdleSima="";
 if(S.evgenPerfect==null) S.evgenPerfect=false;
 if(S.evgenBonusPlayed==null) S.evgenBonusPlayed=false;
 if(S.lyokhaIrataLossTriggered==null) S.lyokhaIrataLossTriggered=false;
+if(S.lyokhaIrataLossPending==null) S.lyokhaIrataLossPending=false;
 if(S.lyokhaIrataLost==null) S.lyokhaIrataLost=0;
 if(S.borrowCount==null) S.borrowCount=0;
 if(S.borrowedTotal==null) S.borrowedTotal=0;
@@ -1606,7 +1621,8 @@ function idleReplyFor(who,msg){
 }
 
 function borrowMoneyInChat(){
- if((S.money||0)>0)return;
+ S.money=Number(S.money)||0;
+ if(S.money>0)return;
 
  const asks=[
    "бля у меня ноль денег",
@@ -2025,9 +2041,9 @@ function renderChat(){
  }
  feed.scrollTop=feed.scrollHeight;
 
+ if((Number(S.money)||0)<=0)addChatAction("💸 Стрельнуть денег в Пивляндии",borrowMoneyInChat,"danger");
  if(news)addChatAction("✍️ Отправить эту новость в Пивляндию",postCurrentNews,"primary");
  else addChatAction("✍️ Написать что-нибудь",postRandomSimaMessage,"primary");
- if((S.money||0)<=0)addChatAction("💸 Стрельнуть денег в Пивляндии",borrowMoneyInChat,"danger");
 
  const hasAntons=S.chatMessages.some(m=>m.author==="Антонс");
  const hasIvan=S.chatMessages.some(m=>m.author==="Иван");
@@ -3314,27 +3330,41 @@ function randomLyokhaCost(label){
  return {label,rolled,lost};
 }
 
-function maybeLyokhaIrataLoss(){
- const beersWithLyokha=S.lyokhaLoops||0;
- if(S.lyokhaIrataLossTriggered || beersWithLyokha<7 || (S.irataCorrect||0)<=0 || S.irataSkipped)return;
+function lyokhaIrataRiskChance(){
+ const beers=S.lyokhaLoops||0;
+ if(beers<7)return 0;
+ return Math.min(.50,.10+(beers-7)*.10);
+}
 
- // 7 beers = 10%, then +8pp per beer, capped at 50%.
- const chance=Math.min(.50,.10+(beersWithLyokha-7)*.08);
- if(Math.random()>=chance)return;
-
+function applyLyokhaIrataHalfNow(){
+ if((S.irataCorrect||0)<=0)return 0;
  const before=S.irataCorrect||0;
  const lost=Math.ceil(before/2);
  S.irataCorrect=Math.max(0,before-lost);
  S.totalCorrect=Math.max(0,(S.totalCorrect||0)-lost);
- S.lyokhaIrataLossTriggered=true;
- S.lyokhaIrataLost=lost;
+ S.lyokhaIrataLost=(S.lyokhaIrataLost||0)+lost;
+ S.lyokhaIrataLossPending=false;
+ return lost;
+}
 
- pushChat(
-   "Система",
-   `После ${beersWithLyokha} пива с Лёхой Сима внезапно перестал помнить половину того, что знал по IRATA. −${lost} IRATA-баллов.`,
-   "system",
-   true
- );
+function maybeLyokhaIrataLoss(){
+ const beersWithLyokha=S.lyokhaLoops||0;
+ if(S.lyokhaIrataLossTriggered || beersWithLyokha<7 || S.irataSkipped)return;
+
+ const chance=lyokhaIrataRiskChance();
+ if(Math.random()>=chance)return;
+
+ S.lyokhaIrataLossTriggered=true;
+
+ if((S.irataCorrect||0)>0){
+   const lost=applyLyokhaIrataHalfNow();
+   pushChat("Система",`После ${beersWithLyokha} пива с Лёхой сработал риск ${Math.round(chance*100)}%. Сима забыл половину IRATA: −${lost} баллов.`,"system",true);
+ }else{
+   S.lyokhaIrataLossPending=true;
+   pushChat("Система",`После ${beersWithLyokha} пива с Лёхой сработал риск ${Math.round(chance*100)}%. На assessment половина набранных IRATA-баллов сгорит.`,"system",true);
+ }
+ updateStats();
+ save();
 }
 
 function lyokhaDrink(n=1,stressDelta=6){
@@ -3348,8 +3378,26 @@ function updateStats(){
  UI.total.textContent=`${S.totalCorrect} / ${S.totalAsked}`;
  UI.irata.textContent=`${S.irataCorrect} / 32`;
  UI.beer.textContent=S.beer;
+ const beerRisk=document.getElementById("beerRisk");
+ if(beerRisk){
+   const l=S.lyokhaLoops||0;
+   if(S.lyokhaIrataLossTriggered){
+     beerRisk.textContent=S.lyokhaIrataLossPending
+       ?`с Лёхой: ${l} · −50% IRATA ждёт assessment`
+       :`с Лёхой: ${l} · −50% IRATA сработало`;
+     beerRisk.className="beer-risk triggered";
+   }else if(l>=7){
+     beerRisk.textContent=`с Лёхой: ${l} · риск −50% IRATA: ${Math.round(lyokhaIrataRiskChance()*100)}%`;
+     beerRisk.className="beer-risk danger";
+   }else{
+     beerRisk.textContent=`с Лёхой: ${l} · риск с 7`;
+     beerRisk.className="beer-risk";
+   }
+ }
  UI.money.textContent=`$${S.money}`;
  if(UI.moneyFill)UI.moneyFill.style.width=Math.max(0,Math.min(100,(S.money/200)*100))+"%";
+ const borrowBtn=document.getElementById("zeroMoneyBorrowBtn");
+ if(borrowBtn)borrowBtn.hidden=(Number(S.money)||0)>0;
  UI.stress.textContent=`${S.stress}%`;
  updateChatBadge();
  const milestones={start:1,yurt:5,beachIntro:10,fatmaArrival:15,ayubQuizIntro:20,irataStart:28,quizPlanning:34,quizEquipment:41,quizMethods:49,quizTeam:57,assessment:62,belgradeArrival:68,meetEvgen:74,lyokhaBelgrade:78,karavanovCall:83,karavanovQuiz:88,scoutQuiz:93,finalCrossroads:96,retryIntro:97,irataVictory:100,scoutEnd:100,gardenEnd:100,remoteEnd:100,beerEnd:100};
@@ -3379,6 +3427,10 @@ function enterScene(key, fromChoice=true){
    sc.call=(sc.call?sc.call+"<br><br>":"")+moneyLine;
  }
  if(sc.dynamic==="assessment"){
+   let lyokhaAssessmentLoss=0;
+   if(S.lyokhaIrataLossPending && !S.irataSkipped && (S.irataCorrect||0)>0){
+     lyokhaAssessmentLoss=applyLyokhaIrataHalfNow();
+   }
    const effectiveIrata=Math.max(0,S.irataCorrect-(S.antonPrepPenalty||0));
    const pass=S.irataSkipped || effectiveIrata>=26;
    S.passedIrata=pass;
@@ -3386,7 +3438,7 @@ function enterScene(key, fromChoice=true){
      sc.text="IRATA-вопросы были пропущены: включён сюжетный режим.";
      sc.call="Сюжет продолжается без оценки знаний.";
    }else{
-     sc.text=`IRATA score: ${S.irataCorrect} / 32.${S.antonPrepPenalty?` После советов Антонса игровой штраф: −${S.antonPrepPenalty}. Итог для assessment: ${effectiveIrata} / 32.`:""} Game target: 26 / 32. ${pass ? "Sima passes the game assessment." : "Not enough points this time."}`;
+     sc.text=`IRATA score: ${S.irataCorrect} / 32.${lyokhaAssessmentLoss?` После пива с Лёхой сгорела половина набранных баллов: −${lyokhaAssessmentLoss}.`:""}${S.antonPrepPenalty?` После советов Антонса игровой штраф: −${S.antonPrepPenalty}.`:""} Итог для assessment: ${effectiveIrata} / 32. Game target: 26 / 32. ${pass ? "Sima passes the game assessment." : "Not enough points this time."}`;
      sc.call=pass ? "Первый большой барьер пройден." : "Позже можно будет пройти короткую пересдачу.";
    }
    sc.choices=[[pass?"✅ Дальше":"🧳 Выбирать новый маршрут",pass?"pass":"fail",pass?"good":"danger"]];
@@ -4684,6 +4736,10 @@ function resetGame(){
 $("restart").addEventListener("click",()=>{if(confirm("Начать игру заново? Текущий прогресс будет сброшен."))resetGame();});
 $("saveInfo").addEventListener("click",()=>{save();UI.log.textContent="Сохранено в этом браузере. Можно закрыть вкладку и вернуться позже.";});
 $("chatBtn").addEventListener("click",openChat);
+$("zeroMoneyBorrowBtn").addEventListener("click",()=>{
+ openChat();
+ borrowMoneyInChat();
+});
 $("chatClose").addEventListener("click",closeChat);
 ["hubChat","tomatoChat","raceChat","walkChat","antonChat","ivanChat","timoChat"].forEach(id=>{
  const b=$(id);
