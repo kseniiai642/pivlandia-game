@@ -1016,6 +1016,87 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
   #chatBtn,.zero-money-borrow{min-height:46px;font-size:13px!important}
 }
 
+
+/* v6.3 — IRATA 60-floor practice */
+.irata-practice-card{width:min(900px,100%)!important}
+.irata-practice-hud{
+  display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;
+  margin:8px 0;font-size:11px;font-weight:1000
+}
+.irata-practice-hud span{
+  border:2px solid var(--ink);border-radius:999px;background:#fff;padding:5px 9px
+}
+.irata-tower-board{
+  position:relative;height:430px;overflow:hidden;border:3px solid var(--ink);
+  border-radius:14px;background:
+    repeating-linear-gradient(180deg,rgba(255,255,255,.18) 0 5px,rgba(0,0,0,.03) 5px 7px),
+    linear-gradient(90deg,#b9d8eb 0 15%,#58636b 15% 85%,#b9d8eb 85% 100%);
+}
+.irata-tower-board::before{
+  content:"";position:absolute;left:18%;right:18%;top:8%;bottom:3%;
+  background:
+    repeating-linear-gradient(180deg,transparent 0 5.8px,rgba(255,255,255,.18) 5.8px 7px),
+    repeating-linear-gradient(90deg,#29343b 0 26px,#9fc1d1 26px 39px,#29343b 39px 55px);
+  border:3px solid #20272b;
+  box-shadow:inset 0 0 0 4px rgba(255,255,255,.08)
+}
+.tower-roof{
+  position:absolute;z-index:7;top:4px;left:50%;transform:translateX(-50%);
+  padding:3px 8px;border:2px solid var(--ink);border-radius:7px;background:#fff;
+  font-size:9px;font-weight:1000;white-space:nowrap
+}
+.tower-label{
+  position:absolute;z-index:8;right:5px;width:30px;text-align:center;
+  border:2px solid var(--ink);border-radius:6px;background:#fff;font-size:9px;font-weight:1000
+}
+.tower-label-60{top:7%}.tower-label-40{top:35%}.tower-label-20{top:64%}.tower-label-0{bottom:2%}
+.irata-platform{
+  position:absolute;z-index:12;left:50%;bottom:3%;width:132px;height:74px;
+  transform:translateX(-50%);transition:bottom .55s cubic-bezier(.2,.8,.2,1),transform .18s ease
+}
+.irata-platform img{
+  position:absolute;left:50%;bottom:15px;transform:translateX(-50%);
+  width:52px;height:58px;object-fit:contain;image-rendering:pixelated;
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.3))
+}
+.irata-platform-deck{
+  position:absolute;left:8px;right:8px;bottom:4px;height:13px;
+  background:#e7b54c;border:3px solid #222;border-radius:3px;
+  box-shadow:0 5px 0 rgba(0,0,0,.18)
+}
+.irata-cable{
+  position:absolute;z-index:10;top:0;width:3px;background:#1f2326;
+  transform-origin:top center;transition:opacity .15s,filter .15s
+}
+.irata-cable.cable-1{left:44%;height:94%}
+.irata-cable.cable-2{left:50%;height:94%}
+.irata-cable.cable-3{left:56%;height:94%}
+.irata-cable.broken{
+  background:linear-gradient(180deg,#1f2326 0 47%,transparent 47% 55%,#1f2326 55% 100%);
+  opacity:.55;filter:drop-shadow(0 0 2px #d33)
+}
+.irata-platform.one-broken{transform:translateX(-50%) rotate(-2deg)}
+.irata-platform.two-broken{transform:translateX(-50%) rotate(4deg)}
+.irata-practice-question{
+  margin-top:10px;border:2px solid var(--ink);border-radius:11px;background:#fff8db;
+  padding:11px 12px;font-size:14px;line-height:1.4;font-weight:900
+}
+.irata-practice-answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.irata-practice-answer{
+  border:2px solid var(--ink);border-radius:10px;background:#fff;padding:10px 11px;
+  text-align:left;font:inherit;font-size:12px;font-weight:850;min-height:54px
+}
+.irata-practice-answer:hover{background:#fff4b6}
+.irata-practice-answer:disabled{opacity:.55}
+.irata-practice-answer.correct{background:#dff1df}
+.irata-practice-answer.wrong{background:#ffd9d3}
+@media(max-width:650px){
+  .irata-tower-board{height:360px}
+  .irata-practice-answers{grid-template-columns:1fr}
+  .irata-practice-question{font-size:13px}
+  .irata-platform{width:110px;height:66px}
+}
+
 </style>
 </head>
 <body>
@@ -1066,7 +1147,7 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
     <button class="smallbtn" id="saveInfo">💾 Сохранение: авто</button>
     <button class="smallbtn" id="chatBtn">🍺 Пивляндия <span id="chatDraftMark" class="chat-draft-mark" hidden>!</span><span id="chatUnread" class="chat-badge zero">0</span></button>
   </div>
-  <div class="log" id="log">Версия 6.2 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
+  <div class="log" id="log">Версия 6.3 — Пивляндия, Тимоша, гонка на самокате, Лектор Иван, Антонс и путь Симы к IRATA.</div>
 </div>
 
 
@@ -1221,6 +1302,49 @@ h1{font-size:clamp(22px,5vw,32px);line-height:1.1;margin:5px 0 12px}
   </div>
 </div>
 
+
+<div id="irataPracticeOverlay" class="mini-overlay">
+  <div class="mini-card irata-practice-card">
+    <div class="mini-top">
+      <div>
+        <div class="mini-title">🏗️ IRATA · 60 этажей</div>
+        <div class="hub-sub">Правильно → +5 этажей · ошибка → −1 трос</div>
+      </div>
+      <div class="overlay-top-actions">
+        <button id="irataPracticeChat" class="overlay-chat-btn">💬</button>
+        <button id="irataPracticeExit" class="chat-close">×</button>
+      </div>
+    </div>
+
+    <div class="irata-practice-hud">
+      <span>Этаж: <b id="irataPracticeFloor">0</b>/60</span>
+      <span>Тросы: <b id="irataPracticeLives">3</b>/3</span>
+      <span id="irataPracticeLevel">BASIC</span>
+    </div>
+
+    <div id="irataTowerBoard" class="irata-tower-board">
+      <div class="tower-label tower-label-60">60</div>
+      <div class="tower-label tower-label-40">40</div>
+      <div class="tower-label tower-label-20">20</div>
+      <div class="tower-label tower-label-0">0</div>
+      <div class="tower-roof">IRATA TRAINING TOWER</div>
+
+      <div id="irataCable1" class="irata-cable cable-1"></div>
+      <div id="irataCable2" class="irata-cable cable-2"></div>
+      <div id="irataCable3" class="irata-cable cable-3"></div>
+
+      <div id="irataPlatform" class="irata-platform">
+        <img id="irataPracticeHero" alt="Сима">
+        <div class="irata-platform-deck"></div>
+      </div>
+    </div>
+
+    <div id="irataPracticeQuestion" class="irata-practice-question"></div>
+    <div id="irataPracticeAnswers" class="irata-practice-answers"></div>
+    <div id="irataPracticeFeedback" class="mini-note"></div>
+  </div>
+</div>
+
 <div id="walkOverlay" class="walk-overlay">
   <div class="walk-card">
     <div id="walkTitle" class="walk-title">Дойти до точки</div>
@@ -1261,7 +1385,7 @@ const initialState = () => ({
  scene:"start", totalCorrect:0,totalAsked:0,irataCorrect:0,irataAsked:0,
  beer:0,stress:18,money:200,evgen:70,serbian:0,turkish:0,remote:0,scout:0,
  passedIrata:false, blockCorrect:0, qIndex:0, quizKey:null, history:[], finished:false,
- scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false, lyokhaIrataLossTriggered:false, lyokhaIrataLossPending:false, lyokhaIrataLost:0, borrowCount:0, borrowedTotal:0, lastLyokhaCosts:[]
+ scoutClues:0, lyokhaLoops:0, wokeUpWrongPlace:false, beachPerfect:false, fatmaLiked:false, karavanovPerfect:false, irataSkipped:false, hubVisited:{turkey:{},belgrade:{},garden:{}}, tomatoesFound:0, gardenTomatoesDone:false, gardenRaceDone:false, gardenRaceTime:null, gardenTinctureFound:false, girlsCalls:0, girlsDistractions:0, girlsCallReturn:null, lastGirlsCallScene:null, chatMessages:[], chatPosted:{}, chatUnread:0, chatPending:[], antonCareer:35, antonCaught:0, antonSetups:0, antonMiniPlayed:0, antonCvBest:0, ivanMiniPlayed:0, ivanBestPrice:0, ivanBestLines:0, ivanArchivePlayed:0, ivanCashFound:0, timoMiniPlayed:0, timoBestBottles:0, antonPrepPenalty:0, antonRetryPenalty:0, antonAdviceUsed:{}, antonAdviceHits:0, mazeLyokhaParties:0, tomatoMistakes:0, scoutInfoGiven:0, scoutRopePaid:false, gardenShedSeen:0, lastQuizQuestions:{}, evgenPerfect:false, evgenBonusPlayed:false, lyokhaIrataLossTriggered:false, lyokhaIrataLossPending:false, lyokhaIrataLost:0, borrowCount:0, borrowedTotal:0, lastLyokhaCosts:[], irataPracticePassed:false, irataPracticeBestFloor:0, lastIrataPracticeQuestions:[]
 });
 let S = loadState() || initialState();
 if(!S.hubVisited) S.hubVisited={turkey:{},belgrade:{},garden:{}};
@@ -1315,6 +1439,9 @@ if(S.lyokhaIrataLost==null) S.lyokhaIrataLost=0;
 if(S.borrowCount==null) S.borrowCount=0;
 if(S.borrowedTotal==null) S.borrowedTotal=0;
 if(!Array.isArray(S.lastLyokhaCosts)) S.lastLyokhaCosts=[];
+if(S.irataPracticePassed==null) S.irataPracticePassed=false;
+if(S.irataPracticeBestFloor==null) S.irataPracticeBestFloor=0;
+if(!Array.isArray(S.lastIrataPracticeQuestions)) S.lastIrataPracticeQuestions=[];
 
 const Q = {
  turkishBeach:[
@@ -1435,7 +1562,8 @@ function sceneData(key){
   lyokhaTurkey2:{ch:"lyokha",chapter:"ТУРЦИЯ · НОЧЬ",badge:"+2 ПИВА",title:"Вторая тоже почему-то не последняя",text:"После второй Лёха сообщает, что теперь уже глупо расходиться: «Мы же только вошли в ритм». Где-то далеко Аюб выключает свет в юрте.",enter:()=>lyokhaDrink(1,7),choices:[["🛑 Всё. Точно спать","irataStart","good"],["🍺 Ну и ещё по одной","lyokhaTurkey3","danger"]]},
   lyokhaTurkey3:{ch:"lyokha",chapter:"ТУРЦИЯ · ПОЗДНЯЯ НОЧЬ",badge:"+3 ПИВА",title:"Третья открывает портал в плохие решения",text:"Лёха уже поёт футбольную кричалку с местным таксистом и предлагает «чисто на час» куда-то ехать. Сима вспоминает, что утром IRATA.",enter:()=>lyokhaDrink(1,10),choices:[["🏃 Сбежать в юрту прямо сейчас","irataStart","good"],["😵 Довериться Лёхе ещё раз","lyokhaTurkeyWake","danger"]]},
   lyokhaTurkeyWake:{ch:"hero",chapter:"ТУРЦИЯ · УТРО",badge:"ГДЕ Я?",title:"Сима просыпается на чужом пляжном лежаке",text:"Рядом нет Лёхи, зато есть пластиковый браслет непонятного бара и сообщение: «БРАТ Я УЖЕ ПОЕХАЛ ПО ДЕЛАМ». До IRATA осталось мало времени.",dynamic:"lyokhaCosts",enter:()=>{stress(18);S.lastLyokhaCosts=[randomLyokhaCost("ночная поездка"),randomLyokhaCost("утренние последствия")]},choices:[["🏃 Срочно ехать на обучение","irataStart","danger"]]},
-  irataStart:{ch:"hero",chapter:"IRATA TRAINING",badge:"32 QUESTIONS",title:"Вот ради чего Сима приехал",text:"IRATA-подготовка теперь отдельно: четыре более сложных блока по 8 вопросов, и только они полностью на английском.",call:"Если готовиться не надо, можно пропустить всю учебную часть и продолжить сюжет.",choices:[["📋 Start IRATA questions","quizPlanning","primary"],["⏭ Пропустить IRATA-вопросы и продолжить сюжет","irataSkipAll","skip"]]},
+  irataStart:{ch:"hero",chapter:"IRATA TRAINING",badge:"THEORY + PRACTICE",title:"Вот ради чего Сима приехал",text:"Можно идти в теорию или отдельно потренироваться на учебной высотке. Практика — 60 этажей, три страховочных троса и вопросы от простого к сложному.",call:"Практика не заменяет assessment: после неё можно перейти к 32 теоретическим вопросам.",choices:[["📋 Start IRATA questions","quizPlanning","primary"],["🏗️ Выбрать практику на высотке","irataPracticeIntro","good"],["⏭ Пропустить IRATA-вопросы и продолжить сюжет","irataSkipAll","skip"]]},
+  irataPracticeIntro:{ch:"hero",chapter:"IRATA · PRACTICE",badge:"60 ЭТАЖЕЙ",title:"Учебная высотка",text:"Сима стоит на маленькой площадке. Площадка держится на трёх тросах. Правильный ответ поднимает её на 5 этажей. Ошибка рвёт один трос. Три ошибки — практика окончена.",call:"Вопросы меняются каждый запуск. Чем выше Сима поднимается, тем сложнее становятся сценарии.",enter:()=>setTimeout(startIrataPractice,60)},
   irataSkipAll:{ch:"hero",chapter:"IRATA TRAINING",badge:"STORY MODE",title:"IRATA-викторина пропущена",text:"Сюжет продолжится без проверки знаний. Это режим для тех, кому сейчас не нужна подготовка.",enter:()=>{S.irataSkipped=true;S.passedIrata=true},choices:[["Продолжить сюжет","pass","primary"]]},
   quizPlanning:{ch:"hero",chapter:"IRATA · БЛОК 1",badge:"8 QUESTIONS",title:"Planning & risk assessment",text:"Eight harder questions in English. Answers are shuffled.",quiz:"planning",next:"quizEquipment"},
   quizEquipment:{ch:"hero",chapter:"IRATA · БЛОК 2",badge:"8 QUESTIONS",title:"Equipment & inspection",text:"Inspection, back-up devices, lanyards and equipment control.",quiz:"equipment",next:"midIrata"},
@@ -4381,6 +4509,221 @@ function exitGardenRace(){
  document.getElementById("hubStatus").textContent="Сима сошёл с трассы. Триатлон можно запустить ещё раз.";
 }
 
+
+const IRATA_PRACTICE_BANK={
+ easy:[
+  {id:"e1",q:"Which two lines make up the basic double-protection rope-access system?",o:["A working line and a safety line","Two working lines only","A haul line and a tag line","One rope plus the work seat"],a:0,e:"The access system uses the working line; the back-up system uses the safety line."},
+  {id:"e2",q:"Where should the back-up device normally run?",o:["On the safety line","On the working line below the descender","On the tool lanyard","On the work seat"],a:0,e:"The back-up device is part of the back-up system and is attached to the safety line."},
+  {id:"e3",q:"Even when the structure looks extremely strong, the normal anchor principle is:",o:["Two independent anchors: one for each line","One anchor is enough if it is steel","Three anchors are always mandatory","The client decides"],a:0,e:"Double protection still applies even when the anchorage itself appears to have ample strength."},
+  {id:"e4",q:"As a general rule in this ICOP, the recommended static strength for a single anchor is at least:",o:["15 kN","6 kN","10 kN","25 kN"],a:0,e:"The ICOP uses 15 kN as the general minimum static strength recommendation for an anchor."},
+  {id:"e5",q:"After a knot has been set, the tail should be at least:",o:["100 mm","20 mm","50 mm","250 mm"],a:0,e:"The ICOP states that knot tails should be at least 100 mm long once set."},
+  {id:"e6",q:"IRATA requires a rope-access team to contain at least:",o:["Two rope-access technicians","One technician","Four technicians","Two technicians plus a client representative"],a:0,e:"The minimum rope-access team is two technicians, although many jobs require more."},
+  {id:"e7",q:"Which team member must be qualified to supervise rope-access safety?",o:["An IRATA Level 3 technician","Any Level 1 with enough site experience","The building manager","The rescue casualty"],a:0,e:"One member of the team has to be an IRATA Level 3 competent to supervise rope-access safety."},
+  {id:"e8",q:"At the start of the day, the pre-work briefing should refer to:",o:["Method statement, risk assessment, rescue plan and team roles","Only the weather","Only the equipment list","Only the client's deadline"],a:0,e:"The briefing should revisit the planned controls and each team member's role."},
+  {id:"e9",q:"If site conditions change during the job, the team should:",o:["Review the risks and adjust controls","Continue under the original assessment","Wait until the job is finished","Only send an email to the client"],a:0,e:"Changing site conditions should trigger a review of the risks."},
+  {id:"e10",q:"If ropes cannot be rigged to hang free of a sharp or abrasive edge, what is required?",o:["Suitable rope or edge protection","A thicker glove","A second work seat","Only a verbal warning"],a:0,e:"Where free hanging cannot be achieved, the lines should be suitably protected from the hazard."}
+ ],
+ medium:[
+  {id:"m1",q:"A two-person rope-access team is most defensible when:",o:["Either technician could rapidly rescue the other without third-party help, e.g. by a direct lower","The work is high but simple","The client prefers a smaller team","Both technicians are Level 1"],a:0,e:"Two-person teams should be limited to situations where rapid, unaided retrieval is realistically achievable."},
+  {id:"m2",q:"A casualty could not be rescued by a simple direct lower. What is the normal minimum team-size implication?",o:["Three technicians should normally be regarded as the minimum unless other tried-and-tested arrangements exist","Two are still always enough","One Level 3 can work alone","Team size is unrelated to rescue"],a:0,e:"For rescues more complex than a direct lower, three is the normal minimum unless suitable alternative arrangements are in place."},
+  {id:"m3",q:"During ascent or descent, how should the back-up device be positioned?",o:["To minimise possible fall distance and consequences","As low as possible at all times","Locked far above the user","Its position does not matter"],a:0,e:"The back-up device should be positioned to minimise the distance and consequences of any potential fall."},
+  {id:"m4",q:"A technician will be suspended in one place for a long time and uses a work seat. Which statement is correct?",o:["The harness remains the primary attachment even if a work seat is used","The work seat replaces the harness","The work seat may be the only connection to the ropes","A work seat removes the need for a safety line"],a:0,e:"A work seat is additional support; the harness remains the primary means of attachment."},
+  {id:"m5",q:"Why should a descender and back-up device normally be attached with separate connectors?",o:["To preserve the principle of double protection","To make the harness more comfortable","To reduce rope diameter","To allow one device to carry tools"],a:0,e:"Separate connectors help keep the access and back-up systems independent."},
+  {id:"m6",q:"A technician including equipment weighs more than the 100 kg test mass assumed in the guidance. What should the team consider?",o:["Additional energy absorption and/or stronger anchors so impact remains controlled","Nothing changes under any circumstances","Reducing the number of ropes to save weight","Using only one anchor to avoid load sharing"],a:0,e:"The guidance says heavier system mass should be considered, including energy absorption and/or increased anchor strength."},
+  {id:"m7",q:"Two lower-strength anchors are linked to act as one independent anchor. Which is the best description?",o:["Load should be shared and combined static strength should reach the recommended minimum; individual anchors are recommended to be at least 10 kN","Any two anchors automatically become 15 kN","The stronger anchor should take the entire load","Linked lower-strength anchors are never acceptable"],a:0,e:"The ICOP allows linked lower-strength anchors if the load is shared and the combined strength reaches the recommended minimum."},
+  {id:"m8",q:"Before work starts, what should be true of the rescue arrangements?",o:["They should be adequate for the actual situation, briefed to the team, with sufficient people and resources available","A generic company rescue plan is always enough","Rescue can be planned after an incident","Only the Level 3 needs to know the rescue plan"],a:0,e:"Rescue should be site-suitable, understood by the team and realistically resourced."},
+  {id:"m9",q:"Work is taking place over water. What extra planning principle applies?",o:["Provide suitable rescue equipment and measures for prompt rescue from drowning risk","The normal land rescue plan is automatically sufficient","Only buoyant ropes are needed","No change if the technician can swim"],a:0,e:"The ICOP calls for suitable rescue equipment and prompt-rescue measures when working over water."},
+  {id:"m10",q:"A permit-to-work isolates an electrical hazard. When should that isolation remain in place?",o:["While work is in progress and until everyone is clear of the danger area","Only until the first technician is on rope","Until lunchtime","Only during the initial briefing"],a:0,e:"The permit system should ensure the hazard stays isolated until personnel are clear."}
+ ],
+ hard:[
+  {id:"h1",q:"A large steel beam is unquestionably strong enough for both ropes. Which rigging logic best matches the ICOP?",o:["Use two independent anchor points for working and safety lines even though the same strong structural element may provide the anchorage","One shared anchor point is enough because the beam is strong","Attach both lines to the same connector to reduce clutter","Replace the safety line with a stronger working line"],a:0,e:"A strong anchorage does not remove the requirement for independent anchors for the two lines."},
+  {id:"h2",q:"A two-person team can lower an unconscious casualty directly to a safe platform in seconds, without outside help. What follows?",o:["A two-person team may be considered if the full situation and other risks also support it","A three-person team is mandatory in every case","One technician is enough because the rescue is simple","The rescue plan is unnecessary"],a:0,e:"The direct-lower scenario is the specific type of situation in which two-person teams may be considered."},
+  {id:"h3",q:"The planned rescue involves passing a re-anchor and transferring the casualty before lowering. What is the strongest team-size conclusion?",o:["Treat three technicians as the normal minimum unless other specific tried-and-tested arrangements make the rescue workable","Two technicians are automatically enough because both are trained","The casualty does not count as load","Team size should be decided only by building height"],a:0,e:"Once rescue is more complex than a rapid direct lower, the normal minimum shifts to three unless alternative arrangements are proven."},
+  {id:"h4",q:"During a re-anchor manoeuvre, a technician temporarily has one secure connection while moving the second. Why is this a problem?",o:["Rope-access manoeuvres should maintain at least two independent points of attachment at all times","One point is enough for less than ten seconds","The rule applies only during descent","The safety line can be disconnected whenever both hands are free"],a:0,e:"Double protection must be maintained throughout manoeuvres such as passing re-anchors or knots."},
+  {id:"h5",q:"A rescue may place two people on the anchor system. Which reasoning is best?",o:["The higher combined mass makes anchor-system loading and energy management especially important","The anchor recommendation assumes unlimited mass","Two people halve the load on each anchor automatically","Rescue loading is irrelevant because no movement occurs"],a:0,e:"The ICOP explicitly highlights greater-than-100 kg system mass, especially during rescue, as a loading consideration."},
+  {id:"h6",q:"A rope passes over a hot abrasive edge, but a textile sleeve protects only against abrasion. What is the best decision?",o:["Choose protection suitable for the actual hazards, including heat as well as abrasion","Any rope protector is sufficient once installed","Use the sleeve and inspect only after the job","Rely on the safety line to compensate"],a:0,e:"Protection has to be suitable for the particular hazard; compatibility with cutting, abrasion, heat or contamination matters."},
+  {id:"h7",q:"A conventional suspended platform is also being used on the façade. What happens to rope-access double protection?",o:["It still applies, and rope-access anchors should be independent of the suspended-platform anchors","The suspended platform replaces the safety line","Both systems should share one anchor to simplify rescue","Double protection becomes optional"],a:0,e:"The ICOP says rope-access double protection still applies alongside conventional suspended access equipment."},
+  {id:"h8",q:"The weather changes, making the planned rope path rub against an edge that was not hazardous earlier. Which sequence best reflects the guidance?",o:["Stop/review the changed risk, then modify rigging or protection before continuing","Continue because the morning risk assessment was signed","Add a verbal warning and continue","Move the back-up device lower and ignore the edge"],a:0,e:"Changed conditions require a risk review, and hazardous rope contact should be eliminated or protected."},
+  {id:"h9",q:"A site has several separated work areas and complex environmental conditions. Which supervision conclusion is most appropriate?",o:["More than one Level 3 supervisor may be appropriate depending on the circumstances","One Level 3 is always enough regardless of site layout","Level 3 supervision is optional if radios work","Each area should work without supervision to remain independent"],a:0,e:"The ICOP notes that multiple Level 3 supervisors may be appropriate for complex sites, multiple areas or arduous conditions."},
+  {id:"h10",q:"A restricted area could expose the team to poisoning or asphyxiation. What should drive the team setup?",o:["Training, competence, experience and team size sufficient to deal with emergencies in that environment","The same team size used on every normal façade job","Only the rope length","Whether the client can call emergency services"],a:0,e:"Particularly hazardous or restricted areas require team capability and size appropriate to the emergency scenarios."}
+ ]
+};
+
+let IRATA_PRACTICE=null;
+
+function shufflePractice(arr){
+ const a=[...arr];
+ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+ return a;
+}
+
+function freshPracticeSet(){
+ const last=new Set(S.lastIrataPracticeQuestions||[]);
+ const pickTier=(tier)=>{
+   const bank=IRATA_PRACTICE_BANK[tier];
+   const fresh=shufflePractice(bank.filter(q=>!last.has(q.id)));
+   const old=shufflePractice(bank.filter(q=>last.has(q.id)));
+   return [...fresh,...old].slice(0,4);
+ };
+ const set=[...pickTier("easy"),...pickTier("medium"),...pickTier("hard")];
+ S.lastIrataPracticeQuestions=set.map(q=>q.id);
+ save();
+ return set;
+}
+
+function startIrataPractice(){
+ const ov=document.getElementById("irataPracticeOverlay");
+ if(!ov)return;
+ IRATA_PRACTICE={
+   floor:0,
+   lives:3,
+   broken:0,
+   index:0,
+   questions:freshPracticeSet(),
+   used:new Set(),
+   waiting:false
+ };
+ const hero=document.getElementById("irataPracticeHero");
+ if(hero)hero.src=ASSETS.hero;
+ ["irataCable1","irataCable2","irataCable3"].forEach(id=>document.getElementById(id)?.classList.remove("broken"));
+ const p=document.getElementById("irataPlatform");
+ if(p){p.classList.remove("one-broken","two-broken");p.style.bottom="3%";}
+ ov.classList.add("open");
+ renderIrataPracticeQuestion();
+ updateIrataPracticeVisuals();
+}
+
+function practiceTier(){
+ if(!IRATA_PRACTICE)return "easy";
+ if(IRATA_PRACTICE.floor<20)return "easy";
+ if(IRATA_PRACTICE.floor<40)return "medium";
+ return "hard";
+}
+
+function practiceQuestionForTier(){
+ const tier=practiceTier();
+ const bank=IRATA_PRACTICE.questions.filter(q=>q.id[0]===tier[0] && !IRATA_PRACTICE.used.has(q.id));
+ if(bank.length)return bank[0];
+ const fallback=IRATA_PRACTICE_BANK[tier].filter(q=>!IRATA_PRACTICE.used.has(q.id));
+ return shufflePractice(fallback)[0] || shufflePractice(IRATA_PRACTICE_BANK[tier])[0];
+}
+
+function updateIrataPracticeVisuals(){
+ if(!IRATA_PRACTICE)return;
+ document.getElementById("irataPracticeFloor").textContent=IRATA_PRACTICE.floor;
+ document.getElementById("irataPracticeLives").textContent=IRATA_PRACTICE.lives;
+ document.getElementById("irataPracticeLevel").textContent=IRATA_PRACTICE.floor<20?"BASIC":IRATA_PRACTICE.floor<40?"APPLIED":"SCENARIO";
+ const p=document.getElementById("irataPlatform");
+ if(p){
+   const pct=3+(IRATA_PRACTICE.floor/60)*80;
+   p.style.bottom=pct+"%";
+   p.classList.toggle("one-broken",IRATA_PRACTICE.broken===1);
+   p.classList.toggle("two-broken",IRATA_PRACTICE.broken>=2);
+   const cableHeight=Math.max(8,89-(IRATA_PRACTICE.floor/60)*80);
+   ["irataCable1","irataCable2","irataCable3"].forEach(id=>{
+     const c=document.getElementById(id);
+     if(c)c.style.height=cableHeight+"%";
+   });
+ }
+}
+
+function renderIrataPracticeQuestion(){
+ if(!IRATA_PRACTICE)return;
+ const q=practiceQuestionForTier();
+ if(!q)return;
+ IRATA_PRACTICE.current=q;
+ IRATA_PRACTICE.used.add(q.id);
+ const qbox=document.getElementById("irataPracticeQuestion");
+ const answers=document.getElementById("irataPracticeAnswers");
+ const note=document.getElementById("irataPracticeFeedback");
+ qbox.textContent=q.q;
+ note.textContent="";
+ answers.innerHTML="";
+ const mixed=q.o.map((label,i)=>({label,i}));
+ shufflePractice(mixed).forEach(item=>{
+   const b=document.createElement("button");
+   b.className="irata-practice-answer";
+   b.textContent=item.label;
+   b.onclick=()=>answerIrataPractice(item.i,b);
+   answers.appendChild(b);
+ });
+}
+
+function answerIrataPractice(chosen,button){
+ if(!IRATA_PRACTICE || IRATA_PRACTICE.waiting)return;
+ IRATA_PRACTICE.waiting=true;
+ const q=IRATA_PRACTICE.current;
+ const correct=chosen===q.a;
+ const buttons=[...document.querySelectorAll(".irata-practice-answer")];
+ buttons.forEach(b=>b.disabled=true);
+ const note=document.getElementById("irataPracticeFeedback");
+
+ if(correct){
+   button.classList.add("correct");
+   IRATA_PRACTICE.floor=Math.min(60,IRATA_PRACTICE.floor+5);
+   S.irataPracticeBestFloor=Math.max(S.irataPracticeBestFloor||0,IRATA_PRACTICE.floor);
+   note.textContent="✅ "+q.e;
+   updateIrataPracticeVisuals();
+   save();
+   if(IRATA_PRACTICE.floor>=60){
+     setTimeout(finishIrataPracticeSuccess,700);
+     return;
+   }
+ }else{
+   button.classList.add("wrong");
+   IRATA_PRACTICE.lives--;
+   IRATA_PRACTICE.broken++;
+   const cable=document.getElementById("irataCable"+IRATA_PRACTICE.broken);
+   if(cable)cable.classList.add("broken");
+   note.textContent="❌ "+q.e;
+   updateIrataPracticeVisuals();
+   save();
+   if(IRATA_PRACTICE.lives<=0){
+     setTimeout(finishIrataPracticeFail,700);
+     return;
+   }
+ }
+
+ setTimeout(()=>{
+   if(!IRATA_PRACTICE)return;
+   IRATA_PRACTICE.waiting=false;
+   renderIrataPracticeQuestion();
+ },760);
+}
+
+function finishIrataPracticeSuccess(){
+ if(!IRATA_PRACTICE)return;
+ IRATA_PRACTICE=null;
+ S.irataPracticePassed=true;
+ save();
+ document.getElementById("irataPracticeOverlay").classList.remove("open");
+ UI.feedback.className="feedback ok";
+ UI.feedback.innerHTML="<b>🏗️ Практика пройдена.</b><br>Сима добрался до 60-го этажа, и хотя площадка выглядела всё менее убедительно, все три троса не понадобилось проверять до конца.";
+ UI.choices.innerHTML="";
+ addChoice("📋 Теперь к теории IRATA",()=>enterScene("quizPlanning"),"primary");
+ addChoice("🔁 Ещё раз на высотку",()=>enterScene("irataPracticeIntro"),"");
+}
+
+function finishIrataPracticeFail(){
+ if(!IRATA_PRACTICE)return;
+ const floor=IRATA_PRACTICE.floor;
+ IRATA_PRACTICE=null;
+ S.irataPracticeBestFloor=Math.max(S.irataPracticeBestFloor||0,floor);
+ save();
+ document.getElementById("irataPracticeOverlay").classList.remove("open");
+ UI.feedback.className="feedback bad";
+ UI.feedback.innerHTML=`<b>💥 Три ошибки.</b><br>Третий трос сдаётся на ${floor}-м этаже. Инструктор останавливает учебную установку раньше, чем Сима успевает объяснить, что «в целом понял принцип».`;
+ UI.choices.innerHTML="";
+ addChoice("🔁 Попробовать практику снова",()=>enterScene("irataPracticeIntro"),"primary");
+ addChoice("📋 Лучше перейти к теории",()=>enterScene("quizPlanning"),"");
+}
+
+function closeIrataPractice(){
+ IRATA_PRACTICE=null;
+ document.getElementById("irataPracticeOverlay").classList.remove("open");
+ enterScene("irataStart");
+}
+
 let EVGEN_CROSS=null,EVGEN_CROSS_TIMER=null;
 
 function startEvgenCrossing(){
@@ -4753,6 +5096,8 @@ $("evgenCrossUp").addEventListener("click",()=>moveEvgenCross(0,-1));
 $("evgenCrossDown").addEventListener("click",()=>moveEvgenCross(0,1));
 $("evgenCrossExit").addEventListener("click",closeEvgenCrossing);
 $("evgenCrossChat").addEventListener("click",openChat);
+$("irataPracticeExit").addEventListener("click",closeIrataPractice);
+$("irataPracticeChat").addEventListener("click",openChat);
 document.addEventListener("keydown",e=>{
  if(!EVGEN_CROSS)return;
  if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key))e.preventDefault();
